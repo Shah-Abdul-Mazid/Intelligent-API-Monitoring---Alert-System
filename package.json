@@ -1,0 +1,26 @@
+{
+  "name": "intelligent-api-monitoring-system",
+  "version": "1.0.0",
+  "description": "Intelligent API Monitoring & Alert System with AI-Powered Anomaly Detection",
+  "type": "module",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "build:frontend": "npm --prefix frontend run build",
+    "start": "node backend/src/index.js",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend test",
+    "generate:docx": "npm --prefix backend run generate-docx"
+  },
+  "keywords": [
+    "api-monitoring",
+    "anomaly-detection",
+    "ai-alerts",
+    "gemini",
+    "express",
+    "react",
+    "sqlite"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "MIT"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "api_name": "PatientDataAPI",
+    "response_time_ms": 1200,
+    "status_code": 200,
+    "records_returned": 50
+  },
+  {
+    "api_name": "AppointmentAPI",
+    "response_time_ms": 5500,
+    "status_code": 500,
+    "records_returned": 0
+  },
+  {
+    "api_name": "BillingAPI",
+    "response_time_ms": 3200,
+    "status_code": 200,
+    "records_returned": 120
+  },
+  {
+    "api_name": "EHRSyncAPI",
+    "response_time_ms": 4800,
+    "status_code": 503,
+    "records_returned": 0
+  },
+  {
+    "api_name": "LabResultsAPI",
+    "response_time_ms": 850,
+    "status_code": 200,
+    "records_returned": 0
+  },
+  {
+    "api_name": "PharmacyInventoryAPI",
+    "response_time_ms": 280,
+    "status_code": 200,
+    "records_returned": 420
+  },
+  {
+    "api_name": "TelehealthStreamAPI",
+    "response_time_ms": 6200,
+    "status_code": 504,
+    "records_returned": 0
+  },
+  {
+    "api_name": "InsuranceClaimsAPI",
+    "response_time_ms": 2400,
+    "status_code": 401,
+    "records_returned": 0
+  }
+]
