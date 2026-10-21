@@ -21,7 +21,17 @@ const server = app.listen(PORT, () => {
   logger.info(`Monitor endpoint: http://localhost:${PORT}/monitor`);
 });
 
-// Graceful shutdown
+// Explicit error handler for port conflicts or network errors
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${PORT} is already in use by another process. Please free port ${PORT} or configure a different PORT in .env.`);
+  } else {
+    logger.error(`Server error: ${err.message}`);
+  }
+  process.exit(1);
+});
+
+// Graceful shutdown listeners
 const shutdown = () => {
   logger.info('Received shutdown signal, closing server and database...');
   server.close(() => {
@@ -32,5 +42,13 @@ const shutdown = () => {
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
+
+process.on('unhandledRejection', (reason) => {
+  logger.error(`Unhandled Rejection: ${reason}`);
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error(`Uncaught Exception: ${err.message}`, { stack: err.stack });
+});
 
 export default server;
