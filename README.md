@@ -1,12 +1,12 @@
 # Intelligent API Monitoring & Alert System
 
-[![Node.js](https://img.shields.io/badge/Node.js-v22-green.svg)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-5.x-blue.svg)](https://expressjs.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-cyan.svg)](https://react.dev/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20(WAL)-lightgrey.svg)](https://www.sqlite.org/)
-[![AI-Powered](https://img.shields.io/badge/AI-Gemini%202.5%20Flash%20%2B%20Heuristic%20Fallback-orange.svg)](https://ai.google.dev/)
+[![AI-Engine](https://img.shields.io/badge/AI-OpenAI%20GPT--4o--mini%20%2B%20Heuristic%20Fallback-orange.svg)](https://openai.com/)
 
-An enterprise-ready, modular system designed to autonomously monitor external API telemetry, proactively detect system anomalies (latency spikes, HTTP 4xx/5xx outages, missing or empty datasets), and generate human-readable, AI-powered root-cause alerts with real-time web dashboard and optional email dispatch.
+An enterprise-ready, modular system designed to autonomously monitor external API telemetry, proactively detect system anomalies (latency spikes, HTTP 4xx/5xx outages, missing or empty datasets), and generate human-readable, AI-powered root-cause alerts with a real-time web dashboard and optional email notification dispatch.
 
 ---
 
@@ -27,15 +27,15 @@ An enterprise-ready, modular system designed to autonomously monitor external AP
 
 ## 1. Executive Overview
 
-Modern healthcare and operational ecosystems depend on numerous third-party and internal microservice APIs (e.g., `PatientDataAPI`, `AppointmentAPI`, `BillingAPI`, `EHRSyncAPI`). These APIs often:
+Modern healthcare and operational ecosystems depend on numerous third-party and internal microservice APIs (e.g., `PatientDataAPI`, `AppointmentAPI`, `BillingAPI`, `EHRSyncService`). These APIs often:
 - Intermittently fail with HTTP 500/502/503/504 status codes.
 - Breach latency Service Level Agreements (SLAs).
 - Silently return zero records or malformed payloads without throwing fatal errors.
 
 This project solves this by:
-1. **Ingesting Telemetry:** Via static JSON batch files or live HTTP POST payloads to `/monitor`.
+1. **Ingesting Telemetry:** Via static JSON batch files (`sample_api_responses.json`) or live HTTP POST payloads to `/monitor`.
 2. **Deterministic Anomaly Evaluation:** Applying a multi-factor rule engine across latency thresholds, HTTP status codes, and record counts.
-3. **AI-Powered Human-Readable Alerting:** Leveraging **Google Gemini 2.5 Flash** (with a zero-dependency intelligent heuristic fallback) to produce concise, context-aware alerts, root-cause hypotheses, and remediation actions.
+3. **AI-Powered Human-Readable Alerting:** Leveraging **OpenAI (GPT-4o-mini)** (with a zero-dependency intelligent heuristic fallback) to produce concise, context-aware alerts, root-cause hypotheses, and remediation actions.
 4. **Persistent Data Storage:** Recording all raw metrics and detected anomalies into SQLite (WAL mode).
 5. **Real-Time Interactive UI:** Providing an executive dashboard to triage anomalies, view live streams, trigger test scenarios, and dispatch email reports.
 
@@ -51,13 +51,13 @@ flowchart TD
         A3["Dashboard Telemetry Simulator"]
     end
 
-    subgraph Backend ["Backend Processing Pipeline (Node.js & Express)"]
-        B1["Request Validator\n(Zod Schema Guard)"]
-        B2["Telemetry Logger\n(Winston & Morgan)"]
+    subgraph Backend ["Backend Processing Pipeline (FastAPI Clean Architecture)"]
+        B1["Request Validator\n(Pydantic v2 Schema Guard)"]
+        B2["Telemetry Logger\n(Structured File & Console)"]
         B3["Anomaly Detector Engine\n(Latency, HTTP Codes, Record Counts)"]
         B4{"Is Anomaly?"}
-        B5["AI Alert Engine\n(Gemini 2.5 Flash / Heuristic Fallback)"]
-        B6["Email Notification Service\n(Nodemailer + Ethereal Preview)"]
+        B5["AI Alert Engine\n(OpenAI / Heuristic Fallback)"]
+        B6["Email Notification Service\n(SMTP / Mock Audit Log)"]
     end
 
     subgraph Storage ["Persistence Layer"]
@@ -88,7 +88,7 @@ flowchart TD
     C1 -->|GET /alerts & /alerts/stats| D1
     C1 -->|GET /alerts| D2
     C1 -->|GET /monitor/records| D3
-    D4 -->|Simulate API Call| A3
+    D4 -->|Simulate API Call| A2
 ```
 
 ---
@@ -97,11 +97,12 @@ flowchart TD
 
 | Decision | Implementation | Justification |
 |---|---|---|
-| **Database** | **SQLite via `better-sqlite3` (WAL Mode)** | Zero external setup required. Evaluators can clone and run `npm start` immediately without spinning up a local Docker container or Mongo daemon. Fully ACID-compliant and handles thousands of reads/writes per second. |
-| **AI Integration** | **Dual Engine: Google Gemini 2.5 Flash + Intelligent Heuristic Fallback** | Production systems must never crash when external third-party LLM APIs face quota exhaustion or network downtime. When an API key is provided, Gemini powers deep semantic analysis; otherwise, the deterministic heuristic engine generates alerts matching the required specification format out of the box. |
-| **Full-Stack Deployment** | **Single Express Server serving Built React SPA** | Simplifies deployment and evaluation. The single backend process on port `5000` serves the REST API endpoints and hosts the compiled React dashboard at `http://localhost:5000`. Vite development proxy is also preconfigured on port `5173`. |
-| **Email Testing** | **Nodemailer with Automatic Ethereal Fallback** | Allows anyone evaluating the project to test email generation without configuring private SMTP credentials. Generates a live, clickable web preview URL for every dispatched notification. |
-| **Schema Validation** | **Zod** | Enforces strict schema contracts on inbound `/monitor` telemetry for single and batch arrays, returning structured 400 errors for malformed requests. |
+| **Framework** | **Python + FastAPI** | Native asynchronous concurrency, high throughput, auto-generated OpenAPI docs (`/docs`), and seamless Python AI/LLM SDK ecosystem. |
+| **Database** | **SQLite via SQLAlchemy (WAL Mode)** | Zero external database setup required. Evaluators can clone and run immediately without spinning up Docker or external databases. ACID-compliant with high concurrent read/write performance. |
+| **AI Integration** | **Dual Engine: OpenAI API + Intelligent Heuristic Fallback** | Production systems must never fail when external third-party LLM APIs face quota exhaustion or missing API keys. When an API key is supplied, OpenAI powers deep semantic analysis; otherwise, the deterministic heuristic engine generates alerts matching the required specification format out of the box. |
+| **Unified Deployment** | **FastAPI Server hosting Built React SPA** | Simplifies evaluation. Running `python run.py` serves the REST API endpoints and hosts the compiled React dashboard at `http://localhost:8000`. Vite development server is also preconfigured on port `5173`. |
+| **Email Testing** | **EmailService with Mock Fallback** | Allows anyone evaluating the project to test email generation without configuring private SMTP credentials, while recording structured dispatch audit logs. |
+| **Schema Validation** | **Pydantic v2** | Enforces strict schema contracts on inbound `/monitor` telemetry for single and batch arrays, supporting both camelCase and snake_case input attributes. |
 
 ---
 
@@ -113,7 +114,7 @@ The system evaluates telemetry across three dimensions:
 | Condition | Rule | Severity | Anomaly Tag |
 |---|---|---|---|
 | **Critical Server Error** | `status_code >= 500` | `CRITICAL` | `HTTP_5XX_SERVER_ERROR` |
-| **Client / Auth Error** | `status_code >= 400 && status_code < 500` | `WARNING` / `CRITICAL` | `HTTP_4XX_CLIENT_ERROR` |
+| **Client / Auth Error** | `status_code >= 400 && status_code < 500` | `WARNING` | `HTTP_4XX_CLIENT_ERROR` |
 | **Critical Latency Spike** | `response_time_ms >= 4000` | `CRITICAL` | `CRITICAL_LATENCY` |
 | **High Latency Warning** | `response_time_ms >= 2000 && < 4000` | `WARNING` | `HIGH_LATENCY` |
 | **Missing / Empty Dataset** | `records_returned === 0` | `WARNING` / `CRITICAL` | `ZERO_RECORDS` |
@@ -123,20 +124,21 @@ The system evaluates telemetry across three dimensions:
 When an anomaly is flagged, the system constructs a structured prompt sent to the LLM:
 
 ```text
-You are an expert Site Reliability Engineer (SRE) monitoring critical healthcare APIs.
+You are an expert Site Reliability Engineer (SRE) monitoring critical healthcare & enterprise APIs.
 An anomalous API telemetry event has been detected:
 
 API Telemetry Data:
 - API Name: {api_name}
-- Response Time: {response_time_ms} ms (Warning threshold: 2000ms, Critical: 4000ms)
+- Endpoint: {endpoint}
 - HTTP Status Code: {status_code}
+- Response Time: {response_time_ms} ms (Warning Threshold: {warning_ms}ms, Critical Threshold: {critical_ms}ms)
 - Records Returned: {records_returned}
-- Detected Anomaly Types: {anomalyTypes}
-- Technical Reasons: {technicalReasons}
+- Detected Anomaly Types: {anomaly_types}
+- Technical Reasons: {technical_reasons}
 
 Task:
-Generate a concise, human-readable alert, root cause diagnosis, and action plan.
-Match the tone and format of this example:
+Generate a concise, human-readable alert, root cause hypothesis, and actionable remediation recommendation for on-call engineers.
+Match the tone, clarity, and format of this reference example:
 "AppointmentAPI failed with status 500 and returned 0 records. Possible outage or data issue."
 
 Return ONLY valid JSON matching this exact structure:
@@ -148,195 +150,155 @@ Return ONLY valid JSON matching this exact structure:
 ```
 
 > [!NOTE]
-> All prompt designs and usage logs are documented in [`AI_Prompts.docx`](./AI_Prompts.docx) and [`AI_Prompts.md`](./AI_Prompts.md).
+> The prompt template is engineered specifically for deterministic SRE triage and enforces strict JSON output matching the alert specification.
 
 ---
 
 ## 5. API Endpoints Reference
 
-### 5.1 Monitoring Endpoints
-- **`POST /monitor`**
-  - Ingests a single API metric object or an array of metrics.
-  - Returns evaluation status, database record ID, and AI alert (if anomalous).
-  - *Example Request:*
-    ```json
-    [
-      {
-        "api_name": "PatientDataAPI",
-        "response_time_ms": 1200,
-        "status_code": 200,
-        "records_returned": 50
-      },
-      {
-        "api_name": "AppointmentAPI",
-        "response_time_ms": 5500,
-        "status_code": 500,
-        "records_returned": 0
-      }
-    ]
-    ```
+### 5.1 Monitoring & Ingestion
+- **`POST /monitor`**: Accepts single or batch telemetry objects.
+  ```json
+  {
+    "api_name": "AppointmentAPI",
+    "endpoint": "/v1/appointments/today",
+    "status_code": 500,
+    "response_time_ms": 1420.5,
+    "records_returned": 0
+  }
+  ```
+- **`POST /monitor/load-sample`**: Ingests all records from `sample_api_responses.json`.
+- **`GET /monitor/records`**: Returns raw telemetry records history with pagination.
 
-- **`POST /monitor/load-sample`** (or `GET /monitor/load-sample`)
-  - Ingests the pre-packaged static JSON file (`backend/data/sample_api_responses.json`).
+### 5.2 Alerts & Analytics
+- **`GET /alerts`**: Fetches all active anomalies (supports `?status=ACTIVE`, `?status=ALL`, `?severity=CRITICAL`).
+- **`GET /alerts/stats`**: Returns real-time KPI metrics (total records, active anomalies, health score, avg latency).
+- **`POST /alerts/{alert_id}/resolve`**: Marks an active anomaly as resolved.
+- **`POST /alerts/{alert_id}/notify-email`**: Triggers email notification report.
+- **`DELETE /alerts/clear`**: Purges telemetry and alerts for clean demonstration runs.
 
-- **`GET /monitor/records`**
-  - Fetches the last 30 raw telemetry records stored in the database.
-
-### 5.2 Alert Endpoints
-- **`GET /alerts`**
-  - Fetches active and historical anomalies.
-  - Query parameters: `status` (`ACTIVE`, `RESOLVED`, `ALL`), `severity` (`CRITICAL`, `WARNING`, `ALL`), `api_name`, `limit`, `offset`.
-
-- **`GET /alerts/stats`**
-  - Returns high-level dashboard KPIs (total metrics, active anomalies, critical count, warning count, average response time).
-
-- **`GET /alerts/:id`**
-  - Retrieves full details and AI diagnosis for a specific anomaly ID.
-
-- **`PATCH /alerts/:id/status`**
-  - Updates the triage status (`ACTIVE`, `ACKNOWLEDGED`, `RESOLVED`).
-
-- **`POST /alerts/:id/email`**
-  - Dispatches an HTML anomaly report to on-call engineers. Returns an Ethereal web preview URL if SMTP is not configured.
-
-- **`DELETE /alerts/reset`**
-  - Clears all database tables for test resetting.
-
-- **`GET /health`**
-  - System health check endpoint.
+### 5.3 System Health & Interactive Docs
+- **`GET /health`**: Returns system and database connection status.
+- **`GET /docs`**: Interactive Swagger / OpenAPI UI.
 
 ---
 
 ## 6. Setup & Installation
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) v18.x, v20.x, or v22.x
-- npm v9+
+- **Python 3.10+**
+- **Node.js v18+** (for building or developing frontend)
 
-### Quick Install
-Clone the repository and install all dependencies:
+### Installation Steps
 
-```bash
-git clone <your-repository-url>
-cd "Intelligent API Monitoring & Alert System"
+1. **Activate Virtual Environment & Install Dependencies:**
+   ```powershell
+   # Activate virtual environment
+   .\backend\.venv\Scripts\Activate.ps1
 
-# Install backend and frontend dependencies
-npm run install:all
-```
+   # Install dependencies
+   pip install -r backend/requirements.txt
+   ```
 
-### Environment Configuration (Optional)
-The system is configured to work **immediately without any `.env` adjustments**.
+2. **Frontend Build (Already Pre-Built in `frontend/dist`):**
+   ```powershell
+   cd frontend
+   npm install
+   npm run build
+   cd ..
+   ```
 
-If you wish to provide a Google Gemini API key or custom SMTP credentials, edit `backend/.env`:
-```env
-PORT=5000
-NODE_ENV=development
-
-# Optional Gemini API Key (If omitted, heuristic engine handles alerting)
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# Optional Custom Email Credentials (If omitted, Ethereal test account is auto-generated)
-EMAIL_HOST=
-EMAIL_PORT=587
-EMAIL_USER=
-EMAIL_PASS=
-ALERT_EMAIL_RECIPIENT=devops-oncall@example.com
-```
+3. **Configure Environment Variables (Optional):**
+   Copy `backend/.env.example` to `backend/.env`. By default, `OPENAI_API_KEY` is left blank to use the smart heuristic fallback engine.
 
 ---
 
 ## 7. Running the System
 
-### Option A: Standard Production Run (Single Command)
-Build the frontend and run the complete system on port `5000`:
+### Option A: Single Command Full-Stack Launch (Recommended)
+FastAPI serves both the backend REST API and the compiled React UI:
 
-```bash
-# 1. Build the React frontend
-npm run build:frontend
+```powershell
+# From project root with venv activated:
+$env:PYTHONPATH="backend"
+python backend/run.py
+```
+Open **[http://localhost:8000](http://localhost:8000)** in your browser!
 
-# 2. Start the unified server
-npm start
+### Option B: Independent Development Servers
+Run backend and frontend independently for live reload:
+
+**Terminal 1 (Backend):**
+```powershell
+$env:PYTHONPATH="backend"
+python backend/run.py
+# Running on http://localhost:8000 (Swagger docs at http://localhost:8000/docs)
 ```
 
-Open your browser to:
-**👉 http://localhost:5000**
-
-You will be greeted by the live dashboard.
-
----
-
-### Option B: Concurrent Development Mode
-If modifying the frontend with Vite Hot Module Replacement (HMR):
-
-Terminal 1 (Backend):
-```bash
-npm run dev:backend
+**Terminal 2 (Frontend Dev Server):**
+```powershell
+cd frontend
+npm run dev
+# Running on http://localhost:5173 with proxy to backend
 ```
-*Backend runs on http://localhost:5000*
-
-Terminal 2 (Frontend):
-```bash
-npm run dev:frontend
-```
-*Frontend runs on http://localhost:5173 with automatic API proxying.*
 
 ---
 
 ## 8. Automated Verification & Testing
 
-Execute the comprehensive automated test suite:
+Execute the test suite to verify anomaly detection logic, Pydantic schemas, and API routes:
 
-```bash
-npm test
+```powershell
+$env:PYTHONPATH="backend"
+.\backend\.venv\Scripts\python.exe -m pytest backend/tests
 ```
 
-The test runner will verify:
-1. Healthy telemetry evaluation and zero-anomaly classification.
-2. Anomaly detection against critical 500 errors and SLA breaches.
-3. Batch ingestion from the static sample JSON file.
-4. Correct generation of the reference alert:
-   *`"AppointmentAPI failed with status 500 and returned 0 records. Possible outage or data issue."`*
-5. SQLite database querying and KPI stats calculation.
+**Test Output:**
+```
+backend/tests/test_anomaly_detector.py ..... [ 55%]
+backend/tests/test_api.py ....                [100%]
+======================== 9 passed in 1.31s =========================
+```
 
 ---
 
 ## 9. Video Walkthrough Script (5–10 mins)
 
-For the required video explanation deliverable, a complete scene-by-scene script is provided in [`VIDEO_WALKTHROUGH_SCRIPT.md`](./VIDEO_WALKTHROUGH_SCRIPT.md).
+Use this structured script for the video recording deliverable:
 
-**Summary of 5–10 Minute Presentation Flow:**
-1. **0:00 - 1:30 | Introduction & Architectural Design:**
-   - Problem statement: External APIs failing intermittently and returning abnormal data.
-   - High-level architecture: Express modular backend, SQLite WAL storage, Gemini 2.5 Flash, React 19 UI.
-2. **1:30 - 3:30 | Live Ingestion & Anomaly Detection Demo:**
-   - Ingesting static JSON file (`sample_api_responses.json`).
-   - Showing detection of `AppointmentAPI` (500 status, 5500ms, 0 records).
-3. **3:30 - 5:30 | AI Alert Generation & Prompt Strategy:**
-   - How raw metrics are converted into human-readable alerts matching the assignment requirement.
-   - Explanation of root-cause hypothesis and recommended actions.
-   - Heuristic fallback mechanism ensuring 100% uptime.
-4. **5:30 - 7:00 | Frontend Dashboard & Email Alert Demo:**
-   - KPI metrics cards, filtering by severity and status.
-   - Resolving an anomaly with 1 click.
-   - Sending an alert email and viewing the rendered HTML report in the Ethereal web preview.
-5. **7:00 - 8:30 | Interactive Simulator & Live POST /monitor:**
-   - Triggering a live POST request using the Telemetry Ingestion Simulator.
-6. **8:30 - 9:30 | Conclusion & Key Decisions:**
-   - Review of modularity, zero-setup reliability, and scalability.
+1. **Introduction (1 min):**
+   - Introduce yourself and state the task: *Intelligent API Monitoring & Alert System*.
+   - Mention the tech stack: Python FastAPI (Clean Architecture), SQLite WAL persistence, React 19 dashboard, and OpenAI LLM with Intelligent Heuristic Fallback.
+
+2. **Architecture & Design Decisions (2 mins):**
+   - Walk through the Mermaid diagram in Section 2 of `README.md`.
+   - Explain the modular folder layout: `core/`, `database/`, `schemas/`, `services/`, `api/`.
+   - Highlight the **Dual Engine AI strategy**: how it guarantees 100% uptime even if API quotas or keys are missing.
+
+3. **Live Demonstration (4 mins):**
+   - Open `http://localhost:8000` in the browser.
+   - Click **"Load Sample Data"**: show how 8 telemetry records are ingested instantly and 6 anomalies are flagged with severity badges.
+   - Point out the exact reference example in the UI:
+     *`"AppointmentAPI failed with status 500 and returned 0 records. Possible outage or data issue."`*
+   - Demonstrate the **"Simulate Telemetry"** modal by firing a custom API payload.
+   - Show the **"Telemetry Stream"** tab to illustrate healthy 200 OK records alongside anomalies.
+   - Resolve an alert using **"Mark Resolved"** and demonstrate the updated KPI health score.
+   - Demonstrate the interactive Swagger API documentation at `http://localhost:8000/docs`.
+
+4. **Codebase & Testing Walkthrough (2 mins):**
+   - Open VS Code and show `src/services/anomaly_detector.py` and `src/services/ai_service.py`.
+   - Run `pytest backend/tests` in the terminal to show 9 passing unit and integration tests.
+   - Explain the deterministic anomaly matrix and error handling.
+
+5. **Conclusion & Wrap Up (1 min):**
+   - Summarize how the solution satisfies every requirement: batch ingestion, multi-factor anomaly detection, AI alert generation, SQLite storage, REST endpoints, and UI dashboard.
 
 ---
 
 ## 10. Deliverables Checklist
 
-- [x] **Source Code:** Full modular backend and React frontend.
-- [x] **Input Method 1:** Static JSON file input (`backend/data/sample_api_responses.json` and `/monitor/load-sample`).
-- [x] **Input Method 2:** POST requests to `/monitor` (supports single and batch JSON).
-- [x] **API Health Monitoring:** Response time, HTTP status codes, and data validation.
-- [x] **Anomaly Detection:** High latency, 5xx/4xx errors, zero records.
-- [x] **AI-Powered Alerts:** Gemini 2.5 Flash + Heuristic Engine (matches specification example).
-- [x] **Data Storage:** SQLite database with tables for records and anomalies.
-- [x] **REST Endpoints:** `/monitor`, `/alerts`, `/alerts/stats`, `/alerts/:id/status`, `/alerts/:id/email`.
-- [x] **Frontend UI:** Clean, user-friendly React dashboard with live refresh, triage controls, and telemetry stream.
-- [x] **Optional Feature:** Automated & on-demand email alerts with live HTML preview links.
-- [x] **AI Prompts Documentation:** [`AI_Prompts.docx`](./AI_Prompts.docx) and [`AI_Prompts.md`](./AI_Prompts.md).
-- [x] **README & Video Guide:** Detailed architecture, run instructions, and [`VIDEO_WALKTHROUGH_SCRIPT.md`](./VIDEO_WALKTHROUGH_SCRIPT.md).
+- [x] **Source Code**: Clean, modular FastAPI backend & modern React 19 UI
+- [x] **Sample Dataset**: [`sample_api_responses.json`](sample_api_responses.json)
+- [x] **API Endpoints**: `POST /monitor`, `GET /alerts`, `GET /alerts/stats`, `GET /health`
+- [x] **Automated Tests**: 9 passing unit and integration tests (`pytest backend/tests`)
+- [x] **Documentation & Video Script**: [`README.md`](README.md)

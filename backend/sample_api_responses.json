@@ -1,0 +1,66 @@
+[
+  {
+    "api_name": "PatientDataAPI",
+    "endpoint": "/v2/patients",
+    "status_code": 200,
+    "response_time_ms": 1200,
+    "records_returned": 50,
+    "timestamp": "2026-10-22T09:14:00Z"
+  },
+  {
+    "api_name": "AppointmentAPI",
+    "endpoint": "/v1/appointments/today",
+    "status_code": 500,
+    "response_time_ms": 5500,
+    "records_returned": 0,
+    "timestamp": "2026-10-22T09:15:00Z"
+  },
+  {
+    "api_name": "BillingAPI",
+    "endpoint": "/v1/invoices/pending",
+    "status_code": 200,
+    "response_time_ms": 180.2,
+    "records_returned": 45,
+    "timestamp": "2026-10-22T09:17:10Z"
+  },
+  {
+    "api_name": "EHRSyncService",
+    "endpoint": "/ehr/sync/records",
+    "status_code": 503,
+    "response_time_ms": 5200.0,
+    "records_returned": 0,
+    "timestamp": "2026-10-22T09:18:45Z"
+  },
+  {
+    "api_name": "LabResultsAPI",
+    "endpoint": "/v1/lab/results/unreviewed",
+    "status_code": 200,
+    "response_time_ms": 2850.4,
+    "records_returned": 12,
+    "timestamp": "2026-10-22T09:19:20Z"
+  },
+  {
+    "api_name": "InsuranceVerificationAPI",
+    "endpoint": "/v1/eligibility/check",
+    "status_code": 401,
+    "response_time_ms": 310.0,
+    "records_returned": 0,
+    "timestamp": "2026-10-22T09:20:00Z"
+  },
+  {
+    "api_name": "PrescriptionGateway",
+    "endpoint": "/v2/prescriptions/active",
+    "status_code": 200,
+    "response_time_ms": 220.5,
+    "records_returned": 88,
+    "timestamp": "2026-10-22T09:21:15Z"
+  },
+  {
+    "api_name": "RadiologyImageSync",
+    "endpoint": "/v1/images/pending-transfers",
+    "status_code": 200,
+    "response_time_ms": 140.0,
+    "records_returned": 0,
+    "timestamp": "2026-10-22T09:22:05Z"
+  }
+]
