@@ -14,20 +14,20 @@ This project autonomously ingests API telemetry, detects anomalies using determi
 
 ## 2. Features
 
-- **Automated Health Monitoring:** Evaluates HTTP status codes, response times (ms), and payload record counts.
+- **Automated Health Monitoring:** Evaluates HTTP status codes, response times, and payload record counts.
 - **Multi-Factor Anomaly Detection:** Detects critical server failures (5xx), client errors (4xx), latency spikes, and silent zero-record returns.
 - **AI-Powered Alert Generation:** Leverages OpenAI LLM (or automatic heuristic engine fallback) to produce concise, human-readable root-cause hypotheses and remediation steps.
 - **Batch & Real-Time Ingestion:** Ingests static JSON files (`sample_api_responses.json`) or live HTTP requests via `POST /monitor`.
 - **Persistent Data Storage:** Stores all telemetry records and active anomalies in an ACID-compliant SQLite database (WAL mode).
-- **Interactive Web Dashboard:** Clean, user-friendly React 19 UI with real-time KPI metrics, active alerts triage, live telemetry streams, and traffic simulation.
+- **Interactive Web Dashboard:** Clean, user-friendly UI with real-time KPI metrics, active alerts triage, live telemetry streams, and traffic simulation.
 - **Email Dispatch Support:** Modular notification service for dispatching alert summaries.
 
 ---
 
 ## 3. Technologies Used
 
-- **Backend:** Python 3.10+, FastAPI, Uvicorn, Pydantic v2
-- **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons
+- **Backend:** Python, FastAPI, Uvicorn, Pydantic v2
+- **Frontend:** React, Vite, Tailwind CSS, Lucide Icons
 - **Database:** SQLite (SQLAlchemy ORM with Write-Ahead Logging)
 - **AI Integration:** OpenAI API (GPT-4o-mini) + Zero-Dependency Heuristic Fallback Engine
 - **Testing:** Pytest, HTTPX TestClient
@@ -38,7 +38,7 @@ This project autonomously ingests API telemetry, detects anomalies using determi
 
 - **Python 3.10+** (Required)
 - **Git** (Required)
-- **Node.js 18+** *(Optional — only required if building the frontend from source; the production UI is already pre-compiled in `frontend/dist`)*
+- **Node.js 18+** *(Optional — only required if building frontend from source; the production UI is already pre-compiled)*
 
 ---
 
@@ -46,7 +46,7 @@ This project autonomously ingests API telemetry, detects anomalies using determi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Shah-Abdul-Mazid/Intelligent-API-Monitoring-Alert-System.git
+   git clone <repository-url>
    cd "Intelligent-API-Monitoring-Alert-System"
    ```
 
@@ -76,9 +76,9 @@ Create an environment configuration file in `backend/.env` (or copy from `backen
 ```ini
 # Application Configuration
 APP_NAME="Intelligent API Monitoring & Alert System"
-DEBUG=True
-PORT=8000
-HOST="0.0.0.0"
+DEBUG=False
+PORT=<PORT>
+HOST="127.0.0.1"
 
 # Database
 DATABASE_URL="sqlite:///./monitoring.db"
@@ -93,7 +93,7 @@ OPENAI_API_KEY=
 OPENAI_MODEL="gpt-4o-mini"
 ```
 
-> **Note:** The system runs completely out of the box with zero external API keys required.
+> **Note:** The system runs completely out of the box with zero external API keys or third-party cloud services required.
 
 ---
 
@@ -101,7 +101,7 @@ OPENAI_MODEL="gpt-4o-mini"
 
 ### Start the Application (Single Command)
 
-The FastAPI server hosts both the backend REST API and the pre-built React dashboard simultaneously:
+The backend server hosts both the REST API and the pre-built web dashboard simultaneously:
 
 **On Windows (PowerShell):**
 ```powershell
@@ -114,16 +114,17 @@ python backend/run.py
 PYTHONPATH=backend python backend/run.py
 ```
 
-### Access Points
-- **Web Dashboard:** [http://localhost:8000](http://localhost:8000)
-- **Interactive Swagger Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
-- **API Health Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
+### Accessing the Application
+Once the service starts, it prints the active local URL in your terminal.
+- **Web Dashboard:** Open the printed local URL in your web browser.
+- **Interactive API Documentation:** Append `/docs` to the local URL for the interactive Swagger interface.
+- **System Health Check:** Append `/health` to verify service and database operational status.
 
 ---
 
 ## 8. Dashboard Walkthrough
 
-1. Open **[http://localhost:8000](http://localhost:8000)** in your browser.
+1. Open the local application URL in your browser.
 2. Click **"Load Sample Data"** in the top bar to ingest the test dataset (`sample_api_responses.json`).
 3. View the **Active Alerts** list displaying anomaly tags, severity levels (`CRITICAL`, `WARNING`), and AI-generated root causes.
 4. Click **"Simulate Telemetry"** to fire custom API test payloads and watch real-time evaluation.
@@ -147,8 +148,8 @@ Intelligent API Monitoring & Alert System/
 │   ├── run.py               # Main application runner
 │   └── .env.example         # Template environment variables
 ├── frontend/
-│   ├── src/                 # React 19 source code (components, hooks, styles)
-│   ├── dist/                # Pre-built static bundle served by FastAPI
+│   ├── src/                 # React source code (components, hooks, styles)
+│   ├── dist/                # Pre-built static bundle served by backend
 │   └── package.json         # Frontend configuration
 ├── sample_api_responses.json# Sample API telemetry batch input
 ├── AI_Prompts.docx          # Documented AI usage, design steps, and prompts
@@ -230,11 +231,3 @@ PYTHONPATH=backend pytest backend/tests
 ## 13. License
 
 This project is licensed under the **MIT License**.
-
----
-
-## 14. Author & Contact
-
-**Shah Abdul Mazid**
-- **GitHub:** [@Shah-Abdul-Mazid](https://github.com/Shah-Abdul-Mazid)
-- **Repository:** [Intelligent-API-Monitoring---Alert-System](https://github.com/Shah-Abdul-Mazid/Intelligent-API-Monitoring---Alert-System)
