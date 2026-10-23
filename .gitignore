@@ -14,9 +14,10 @@ ENV/
 *.db-wal
 *.db-shm
 monitoring.db*
-logs/*.log
-
-# Node
+logs/
+*.log
+*.code-workspace
+*.code-workspace*
 frontend/node_modules/
 node_modules/
 npm-debug.log*
