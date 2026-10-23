@@ -46,8 +46,8 @@ This project autonomously ingests API telemetry, detects anomalies using determi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Shah-Abdul-Mazid/Intelligent-API-Monitoring---Alert-System.git
-   cd "Intelligent-API-Monitoring---Alert-System"
+   git clone https://github.com/Shah-Abdul-Mazid/Intelligent-API-Monitoring-Alert-System.git
+   cd "Intelligent-API-Monitoring-Alert-System"
    ```
 
 2. **Create and activate a virtual environment:**
